@@ -33,9 +33,10 @@ public class PostManager {
         AtomicInteger index = new AtomicInteger();
 
         String posts = Arrays.stream(getPostIds())
-                .limit(postNumber)
                 .map((postId) -> fetchPost(postId))
                 .map((post) -> AddRank(post, index))
+                .filter((post) -> post.isValid())
+                .limit(postNumber)
                 .map(Post::toString)
                 .collect(Collectors.joining(delimiter + "\n"));
 

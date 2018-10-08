@@ -17,6 +17,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 public class PostManagerTests {
+    private static final String postString = "post string";
 
     private JsonConverter jsonConverter;
     private PostPropertiesManager postPropertiesManager;
@@ -28,9 +29,12 @@ public class PostManagerTests {
         serviceManager = Mockito.mock(ServiceManager.class);
         jsonConverter = Mockito.mock(JsonConverter.class);
         postPropertiesManager = Mockito.mock(PostPropertiesManager.class);
+        Post post = Mockito.mock(Post.class);
 
+        when(post.isValid()).thenReturn(true);
+        when(post.toString()).thenReturn(postString);
         when(serviceManager.getData(anyString())).thenReturn("data");
-        when(jsonConverter.fromJson(Mockito.any(String.class), Mockito.any(Class.class))).thenReturn(new Post());
+        when(jsonConverter.fromJson(Mockito.any(String.class), Mockito.any(Class.class))).thenReturn(post);
 
         postManager = new PostManager(postPropertiesManager, jsonConverter, serviceManager);
     }
@@ -68,19 +72,10 @@ public class PostManagerTests {
 
 
     private String getExpectedResult(int postNumber) {
-        final String post = "{ \n" +
-                "\"title\": \"null\",\n" +
-                "\"uri\": \"null\",\n" +
-                "\"author\": \"null\", \n" +
-                "\"points\": 0,\n" +
-                "\"comments\": 0,\n" +
-                "\"rank\": %s\n" +
-                "}";
-
         String expectedResult = StringUtils.EMPTY;
 
         for (int i = 0; i < postNumber; i++) {
-            expectedResult += String.format(post, i + 1);
+            expectedResult += postString ;
 
             if (i < postNumber - 1)
                 expectedResult += ",\n";
